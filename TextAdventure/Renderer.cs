@@ -10,17 +10,17 @@ class Renderer {
         UserInterface = 0
     }
 
-    private static TextBuffer[] mBuffers;
+    private static ITextBuffer[] mBuffers;
 
-    private static TextBuffer mMenuImage;
+    private static ITextBuffer mMenuImage;
 
     public static void Init() {
         int width = 150;
         int height = 50;
 
-        mBuffers = new TextBuffer[Enum.GetNames(typeof(BufferType)).Length];
+        mBuffers = new BasicTextBuffer[Enum.GetNames(typeof(BufferType)).Length];
         for (int i = 0; i < mBuffers.Length; i++) {
-            mBuffers[i] = new TextBuffer(width, height);
+            mBuffers[i] = new BasicTextBuffer(width, height);
         }
 
                     string house =
@@ -163,7 +163,7 @@ class Renderer {
 ";
 
 
-        mMenuImage = new TextBuffer(250, 100);
+        mMenuImage = new BasicTextBuffer(250, 100);
 
         mMenuImage.Blit(house, new Vector2i(0, -15), ConsoleColor.Yellow);
         mMenuImage.Blit(trees, new Vector2i(-45, 0), ConsoleColor.DarkMagenta, true);
@@ -171,13 +171,13 @@ class Renderer {
     }
 
     static public void DrawBox(Vector2i position, int width, int height) {
-        TextBuffer box = new TextBuffer(width, height);
+        ITextBuffer box = new BasicTextBuffer(width, height);
 
-        string boxMessage = "╔" + string.Concat(Enumerable.Repeat("═", box.GetWidth()-2)) + "╗" + "\n";
+        string boxMessage = "╔" + string.Concat(Enumerable.Repeat("═", box.width-2)) + "╗" + "\n";
         for (int i = 0; i  < height-2; i++) {
-            boxMessage += "║" + string.Concat(Enumerable.Repeat(" ", box.GetWidth()-2)) + "║" + "\n";
+            boxMessage += "║" + string.Concat(Enumerable.Repeat(" ", box.width-2)) + "║" + "\n";
         }
-        boxMessage += "╚" + string.Concat(Enumerable.Repeat("═", box.GetWidth()-2)) + "╝";
+        boxMessage += "╚" + string.Concat(Enumerable.Repeat("═", box.width-2)) + "╝";
 
 
         box.Blit(boxMessage, new Vector2i(0, 0));
@@ -219,7 +219,7 @@ class Renderer {
             }
         }
 
-        TextBuffer box = new TextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
+        ITextBuffer box = new BasicTextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
 
 
         //box.Blit(boxMessage, new Vector2i(0, 0));
@@ -272,7 +272,7 @@ class Renderer {
     static public void DrawLocationName(string name) {
         int boxWidth = name.Length + 4;
         Vector2i position = new Vector2i(0, 2);
-        //position.x = (mBuffers[(int)BufferType.UserInterface].GetWidth() / 2) - (boxWidth / 2);
+        //position.x = (mBuffers[(int)BufferType.UserInterface].width / 2) - (boxWidth / 2);
         DrawTextBox(name.PadRight(40), position);
     }
 
@@ -289,18 +289,18 @@ class Renderer {
         }
 
         for (int i = 0; i < splitMessage.Count(); i++) {
-            finalMessage += splitMessage[i].PadRight(mBuffers[(int)BufferType.UserInterface].GetWidth()-4) + '\n';
+            finalMessage += splitMessage[i].PadRight(mBuffers[(int)BufferType.UserInterface].width-4) + '\n';
         }
 
         int boxHeight = splitMessage.Count() + 4;
         Vector2i position = new Vector2i(0, 0);
-        position.y = (mBuffers[(int)BufferType.UserInterface].GetHeight() - 7 - boxHeight);
+        position.y = (mBuffers[(int)BufferType.UserInterface].height - 7 - boxHeight);
         DrawTextBox(finalMessage, position);
 
         Vector2i joinLinePos = new Vector2i(0, position.y - 1);
         mBuffers[(int)BufferType.UserInterface].Blit("║" + string.Concat(Enumerable.Repeat(" ", 42)) + "╚", position);
 
-        joinLinePos.x = mBuffers[(int)BufferType.UserInterface].GetWidth() - 20 - 4;
+        joinLinePos.x = mBuffers[(int)BufferType.UserInterface].width - 20 - 4;
         mBuffers[(int)BufferType.UserInterface].Blit("╚" + string.Concat(Enumerable.Repeat("═", 22)) + "╝", joinLinePos);
     }
 
@@ -327,30 +327,30 @@ class Renderer {
 
 
         Vector2i position = new Vector2i();
-        position.x = mBuffers[(int)BufferType.UserInterface].GetWidth() - 20 - 4;
+        position.x = mBuffers[(int)BufferType.UserInterface].width - 20 - 4;
         position.y = 7;
         DrawTextBox(finalMessage, position);
     }
 
     static public void DrawInputMessage(string message) {
-        Vector2i position = new Vector2i(2, mBuffers[(int)BufferType.UserInterface].GetHeight()-5);
+        Vector2i position = new Vector2i(2, mBuffers[(int)BufferType.UserInterface].height-5);
         mBuffers[(int)BufferType.UserInterface].Blit(message, position);
     }
 
     static public void DrawInputBox() {
-        Vector2i position = new Vector2i(0, mBuffers[(int)BufferType.UserInterface].GetHeight()-7);
-        DrawBox(position, mBuffers[(int)BufferType.UserInterface].GetWidth(), 7);
+        Vector2i position = new Vector2i(0, mBuffers[(int)BufferType.UserInterface].height-7);
+        DrawBox(position, mBuffers[(int)BufferType.UserInterface].width, 7);
     }
 
     static public void DrawCurrentInput() {
-        Vector2i position = new Vector2i(2, mBuffers[(int)BufferType.UserInterface].GetHeight()-3);
+        Vector2i position = new Vector2i(2, mBuffers[(int)BufferType.UserInterface].height-3);
         mBuffers[(int)BufferType.UserInterface].Blit(">> " + Program.GetCurrentCommand() + "_", position);
     }
 
     static public void DrawCompass(bool north, bool south, bool east, bool west) {
-        Vector2i compassPosition = new Vector2i(mBuffers[(int)BufferType.UserInterface].GetWidth() - 24, 0);
+        Vector2i compassPosition = new Vector2i(mBuffers[(int)BufferType.UserInterface].width - 24, 0);
         Vector2i position = new Vector2i(0, 0);
-        TextBuffer compass = new TextBuffer(24, 7);
+        ITextBuffer compass = new BasicTextBuffer(24, 7);
         compass.Blit("o──────────────────────o", position);
         position.y++;
 
@@ -403,7 +403,7 @@ class Renderer {
         int health = player.health;
 
         Vector2i position = new Vector2i(0, 0);
-        TextBuffer healthBar = new TextBuffer(9 + maxHealth, 1);
+        ITextBuffer healthBar = new BasicTextBuffer(9 + maxHealth, 1);
 
         healthBar.Blit("Vitality:", position);
         position.x = "Vitality: ".Length;
@@ -422,7 +422,7 @@ class Renderer {
         if (poisoned) statusMessage += " Poisoned";
 
         Vector2i position = new Vector2i(0, 0);
-        TextBuffer status = new TextBuffer(8 + statusMessage.Length, 1);
+        ITextBuffer status = new BasicTextBuffer(8 + statusMessage.Length, 1);
 
         status.Blit("Status:   ", position);
         position.x += "Status:  ".Length;
@@ -471,8 +471,8 @@ class Renderer {
         }
 
         Vector2i position = new Vector2i(0, 0);
-        position.x = mBuffers[(int)BufferType.UserInterface].GetWidth() / 2 - 26;
-        position.y = mBuffers[(int)BufferType.UserInterface].GetHeight() / 2 - splitString.Length / 2 - 4;
+        position.x = mBuffers[(int)BufferType.UserInterface].width / 2 - 26;
+        position.y = mBuffers[(int)BufferType.UserInterface].height / 2 - splitString.Length / 2 - 4;
 
         mBuffers[(int)BufferType.UserInterface].Clear('░');
         DrawTextBox(finalMessage, position);
@@ -529,8 +529,8 @@ class Renderer {
         }
 
         Vector2i position = new Vector2i(0, 0);
-        position.x = mBuffers[(int)BufferType.UserInterface].GetWidth() / 2 - 26;
-        position.y = mBuffers[(int)BufferType.UserInterface].GetHeight() / 2 - splitString.Length / 2 - 4;
+        position.x = mBuffers[(int)BufferType.UserInterface].width / 2 - 26;
+        position.y = mBuffers[(int)BufferType.UserInterface].height / 2 - splitString.Length / 2 - 4;
 
         mBuffers[(int)BufferType.UserInterface].Clear('░');
         DrawTextBox(finalMessage, position);

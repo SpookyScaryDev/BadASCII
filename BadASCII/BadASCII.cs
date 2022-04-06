@@ -28,20 +28,41 @@ namespace BadASCII {
         }
     }
 
-    class TextBuffer {
+    interface ITextBuffer {
+        int           width { get; }
+        int           height { get; }
+
+        void          Create(int width, int height);
+        void          Clear(char clearChar = ' ', ConsoleColor clearColour = ConsoleColor.Gray);
+
+        char          GetCharacterAt(Vector2i position);
+        ConsoleColor  GetColourAt(Vector2i position);
+
+        void          Blit(char character, Vector2i position, ConsoleColor colour = ConsoleColor.White, bool alpha = false);
+        void          Blit(string message, Vector2i position, ConsoleColor colour = ConsoleColor.White, bool alpha = false);
+        void          Blit(ITextBuffer buffer, Vector2i position, bool alpha = false);
+
+        void          Print();
+    }
+
+    class BasicTextBuffer : ITextBuffer {
         private char[,] mBuffer;
         private int[,]  mColours;
 
-        public TextBuffer(int width, int height) {
+        public BasicTextBuffer(int width, int height) {
             Create(width, height);
         }
 
-        public int GetWidth() {
-            return mBuffer.GetLength(1);
+        public int width {
+            get {
+                return mBuffer.GetLength(1);
+            }
         }
 
-        public int GetHeight() {
-            return mBuffer.GetLength(0);
+        public int height {
+            get {
+                return mBuffer.GetLength(0);
+            }
         }
 
         public char GetCharacterAt(Vector2i position) {
@@ -68,7 +89,7 @@ namespace BadASCII {
         }
 
         public void Blit(char character, Vector2i position, ConsoleColor colour = ConsoleColor.White, bool alpha = false) {
-            if (position.x < GetWidth() && position.y < GetHeight() && position.x >= 0 && position.y >= 0) {
+            if (position.x < width && position.y < height && position.x >= 0 && position.y >= 0) {
                 if ((!alpha) || alpha && character != ' ') {
                     mBuffer[position.y, position.x] = character;
                     mColours[position.y, position.x] = (int)colour;
@@ -85,30 +106,30 @@ namespace BadASCII {
             for (int i = 0; i < message.Length; i++) {
                 pos.x++;
 
-                if (message[i] == '\n' && pos.y + 1 < GetHeight()) {
+                if (message[i] == '\n' && pos.y + 1 < height) {
                     pos.y += 1;
                     pos.x = position.x - 1;
                     continue;
                 }
 
-                if (!(pos.x >= GetWidth() || pos.y >= GetHeight()) && message[i] != '\r') {
+                if (!(pos.x >= width || pos.y >= height) && message[i] != '\r') {
                     Blit(message[i], pos, colour, alpha);
                 }
             }
         }
 
-        public void Blit(TextBuffer buffer, Vector2i position, bool alpha = false) {
+        public void Blit(ITextBuffer buffer, Vector2i position, bool alpha = false) {
             Vector2i pos = new Vector2i();
             Vector2i posInBuffer = new Vector2i();
-            for (int i = 0; i < buffer.GetHeight(); i++) {
-                for (int j = 0; j < buffer.GetWidth(); j++) {
+            for (int i = 0; i < buffer.height; i++) {
+                for (int j = 0; j < buffer.width; j++) {
                     posInBuffer.x = j;
                     posInBuffer.y = i;
 
                     pos.x = position.x + j;
                     pos.y = position.y + i;
 
-                    if (pos.x < GetWidth() && pos.y < GetHeight()) {
+                    if (pos.x < width && pos.y < height) {
                         Blit(buffer.GetCharacterAt(posInBuffer), pos, buffer.GetColourAt(posInBuffer), alpha);
                     }
                 }
@@ -130,10 +151,10 @@ namespace BadASCII {
 
                     nextPos.x = j+1;
                     nextPos.y = i;
-                    if (nextPos.x > (GetWidth()-1)) {
+                    if (nextPos.x > (width-1)) {
                         nextPos.x = 0;
                         nextPos.y++;
-                        if (nextPos.y > (GetHeight()-1)) {
+                        if (nextPos.y > (height-1)) {
                             nextPos = pos;
                         }
                     }
@@ -147,7 +168,7 @@ namespace BadASCII {
                         Console.Write(colourLine);
                         colourLine = "";
                     }
-                    else  if ((i == (GetHeight() - 1) && j == (GetWidth() - 1))) {
+                    else  if ((i == (height - 1) && j == (width - 1))) {
                         Console.ForegroundColor = currentColor;
                         Console.Write(colourLine);
                         colourLine = "";
