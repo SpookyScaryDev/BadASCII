@@ -1,7 +1,7 @@
 # BadASCII
 BadASCII is a simple API for drawing stuff in the console. TextAdventure is an example of it in use.
 
-![screen-gif](./Media/demo.gif)
+![TextAdventure](./Media/demo.mp4)
 
 ### TODO:
 - Add a FastTextBuffer object which can leverage the Windows API to draw to the console more efficiently.
