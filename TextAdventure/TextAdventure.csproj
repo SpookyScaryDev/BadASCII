@@ -46,6 +46,9 @@
     <Compile Include="..\BadASCII\BadASCII.cs">
       <Link>BadASCII.cs</Link>
     </Compile>
+    <Compile Include="..\BadASCII\BasicTextBuffer.cs">
+      <Link>BasicTextBuffer.cs</Link>
+    </Compile>
     <Compile Include="Locations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
