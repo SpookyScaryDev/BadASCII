@@ -189,7 +189,7 @@ class Program {
                 Console.ReadKey();
             }
         }
-        System.Threading.Thread.Sleep(10);
+        System.Threading.Thread.Sleep(100);
     }
 
     static private void Help() { 

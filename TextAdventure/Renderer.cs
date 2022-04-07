@@ -10,9 +10,9 @@ class Renderer {
         UserInterface = 0
     }
 
-    private static ITextBuffer[] mBuffers;
+    private static TextBuffer[] mBuffers;
 
-    private static ITextBuffer mMenuImage;
+    private static TextBuffer mMenuImage;
 
     public static void Init() {
         int width = 150;
@@ -171,7 +171,7 @@ class Renderer {
     }
 
     static public void DrawBox(Vector2i position, int width, int height) {
-        ITextBuffer box = new FastTextBuffer(width, height);
+        TextBuffer box = new FastTextBuffer(width, height);
 
         string boxMessage = "╔" + string.Concat(Enumerable.Repeat("═", box.width-2)) + "╗" + "\n";
         for (int i = 0; i  < height-2; i++) {
@@ -219,7 +219,7 @@ class Renderer {
             }
         }
 
-        ITextBuffer box = new FastTextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
+        TextBuffer box = new FastTextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
 
 
         //box.Blit(boxMessage, new Vector2i(0, 0));
@@ -350,7 +350,7 @@ class Renderer {
     static public void DrawCompass(bool north, bool south, bool east, bool west) {
         Vector2i compassPosition = new Vector2i(mBuffers[(int)BufferType.UserInterface].width - 24, 0);
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer compass = new FastTextBuffer(24, 7);
+        TextBuffer compass = new FastTextBuffer(24, 7);
         compass.Blit("o──────────────────────o", position);
         position.y++;
 
@@ -403,7 +403,7 @@ class Renderer {
         int health = player.health;
 
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer healthBar = new FastTextBuffer(9 + maxHealth, 1);
+        TextBuffer healthBar = new FastTextBuffer(9 + maxHealth, 1);
 
         healthBar.Blit("Vitality:", position);
         position.x = "Vitality: ".Length;
@@ -422,7 +422,7 @@ class Renderer {
         if (poisoned) statusMessage += " Poisoned";
 
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer status = new FastTextBuffer(8 + statusMessage.Length, 1);
+        TextBuffer status = new FastTextBuffer(8 + statusMessage.Length, 1);
 
         status.Blit("Status:   ", position);
         position.x += "Status:  ".Length;
