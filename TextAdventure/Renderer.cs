@@ -18,9 +18,9 @@ class Renderer {
         int width = 150;
         int height = 50;
 
-        mBuffers = new BasicTextBuffer[Enum.GetNames(typeof(BufferType)).Length];
+        mBuffers = new FastTextBuffer[Enum.GetNames(typeof(BufferType)).Length];
         for (int i = 0; i < mBuffers.Length; i++) {
-            mBuffers[i] = new BasicTextBuffer(width, height);
+            mBuffers[i] = new FastTextBuffer(width, height);
         }
 
                     string house =
@@ -163,7 +163,7 @@ class Renderer {
 ";
 
 
-        mMenuImage = new BasicTextBuffer(250, 100);
+        mMenuImage = new FastTextBuffer(250, 100);
 
         mMenuImage.Blit(house, new Vector2i(0, -15), ConsoleColor.Yellow);
         mMenuImage.Blit(trees, new Vector2i(-45, 0), ConsoleColor.DarkMagenta, true);
@@ -171,7 +171,7 @@ class Renderer {
     }
 
     static public void DrawBox(Vector2i position, int width, int height) {
-        ITextBuffer box = new BasicTextBuffer(width, height);
+        ITextBuffer box = new FastTextBuffer(width, height);
 
         string boxMessage = "╔" + string.Concat(Enumerable.Repeat("═", box.width-2)) + "╗" + "\n";
         for (int i = 0; i  < height-2; i++) {
@@ -219,7 +219,7 @@ class Renderer {
             }
         }
 
-        ITextBuffer box = new BasicTextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
+        ITextBuffer box = new FastTextBuffer(splitMessagesplitMessageFormatRemoved.Max(s => s.Length), splitMessagesplitMessageFormatRemoved.Count());
 
 
         //box.Blit(boxMessage, new Vector2i(0, 0));
@@ -350,7 +350,7 @@ class Renderer {
     static public void DrawCompass(bool north, bool south, bool east, bool west) {
         Vector2i compassPosition = new Vector2i(mBuffers[(int)BufferType.UserInterface].width - 24, 0);
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer compass = new BasicTextBuffer(24, 7);
+        ITextBuffer compass = new FastTextBuffer(24, 7);
         compass.Blit("o──────────────────────o", position);
         position.y++;
 
@@ -403,7 +403,7 @@ class Renderer {
         int health = player.health;
 
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer healthBar = new BasicTextBuffer(9 + maxHealth, 1);
+        ITextBuffer healthBar = new FastTextBuffer(9 + maxHealth, 1);
 
         healthBar.Blit("Vitality:", position);
         position.x = "Vitality: ".Length;
@@ -422,7 +422,7 @@ class Renderer {
         if (poisoned) statusMessage += " Poisoned";
 
         Vector2i position = new Vector2i(0, 0);
-        ITextBuffer status = new BasicTextBuffer(8 + statusMessage.Length, 1);
+        ITextBuffer status = new FastTextBuffer(8 + statusMessage.Length, 1);
 
         status.Blit("Status:   ", position);
         position.x += "Status:  ".Length;
